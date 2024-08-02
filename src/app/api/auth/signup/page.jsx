@@ -15,7 +15,7 @@ const page = () => {
             type: e.target.type.value
         }
 
-        let result = await fetch('http://localhost:3000/api/auth/signup/new-user',{
+        let result = await fetch('https://mobile-shop-ten.vercel.app/api/auth/signup/new-user',{
             method: 'POST',
             body: JSON.stringify(newUser),
             headers: {
