@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-
+import { signIn,} from "next-auth/react";
 const NavBar = () => {
     
     const pathName=usePathname()
@@ -72,7 +72,9 @@ const NavBar = () => {
                 </ul>
             </div>
             <div className="navbar-end">
-                <a className="btn">Button</a>
+                {/* image */}
+                <button onClick={()=> signIn()} className="btn">Log in</button>
+                <button className="btn">Register</button>
             </div>
         </div>
     );
