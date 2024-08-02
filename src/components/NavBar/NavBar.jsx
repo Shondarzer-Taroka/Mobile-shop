@@ -2,10 +2,13 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React from 'react';
-import { signIn,} from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
+import Image from 'next/image';
 const NavBar = () => {
-    
-    const pathName=usePathname()
+
+    const pathName = usePathname()
+    const session = useSession()
+    console.log(session);
     const links = [
         {
             title: 'Home',
@@ -47,34 +50,45 @@ const NavBar = () => {
                     <ul
                         tabIndex={0}
                         className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow">
-                        <li><a>Item 1</a></li>
-                        <li>
-                            <a>Parent</a>
-                            <ul className="p-2">
-                                <li><a>Submenu 1</a></li>
-                                <li><a>Submenu 2</a></li>
-                            </ul>
-                        </li>
-                        <li><a>Item 3</a></li>
+                        {
+                            links.map(link => {
+                                return <>
+                                    <li key={link.path}> <Link className={pathName === link.path && 'text-fuchsia-500'} href={link.path}> {link.title} </Link> </li>
+                                </>
+                            })
+                        }
                     </ul>
                 </div>
                 <a className="btn btn-ghost text-xl">daisyUI</a>
             </div>
             <div className="navbar-center hidden lg:flex">
                 <ul className="menu menu-horizontal px-1">
-                 {
-                    links.map(link=>{
-                     return <>
-                        <li key={link.path}> <Link className={pathName === link.path && 'text-fuchsia-500'} href={link.path}> {link.title} </Link> </li>
-                        </>
-                    })
-                 }
+                    {
+                        links.map(link => {
+                            return <>
+                                <li key={link.path}> <Link className={pathName === link.path && 'text-fuchsia-500'} href={link.path}> {link.title} </Link> </li>
+                            </>
+                        })
+                    }
                 </ul>
             </div>
             <div className="navbar-end">
-                {/* image */}
-                <button onClick={()=> signIn()} className="btn">Log in</button>
-                <button className="btn">Register</button>
+                {session.data?.user ? <div className='flex gap-1 items-center'>
+                    <div>
+                        <Image className='rounded-full border border-black' width={60} height={50} alt={session.data?.user.name} src={session.data?.user.image}></Image>
+
+                    </div>
+                    <div className='flex flex-col'>
+                        <p> {session.data?.user.name}</p>
+                        <p> {session.data?.user.type}</p>
+                    </div>
+
+                    <button onClick={() => signOut()} className='bg-fuchsia-500 px-4 py-3 text-white rounded-xl ' >Log Out</button>
+                </div> : <div><button onClick={() => signIn()} className="btn">Log in</button>
+                    <Link href={'/api/auth/signup'}> <button className="btn">Register</button></Link></div>}
+
+
+
             </div>
         </div>
     );
